@@ -5,7 +5,7 @@ import pymysql
 import time
 
 # Database Setup
-db = pymysql.connect(host="localhost", user="pi", password="123", database="assignment1")
+db = pymysql.connect(host="localhost", user="pi", password="", database="assignment1")
 cursor = db.cursor()
 
 # Connect to Arduino via Serial
