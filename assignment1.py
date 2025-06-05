@@ -45,7 +45,7 @@ def update_data():
     if data:
         try:
             temp, flame = data.split(",")
-            temp_label.config(text=f"Temperature: {temp}°C")
+            temp_label.config(text=f"Temperature: {temp} C")
             
             if flame == "0":
                 fire_label.config(text="Fire Status: FIRE DETECTED!", fg="red")
