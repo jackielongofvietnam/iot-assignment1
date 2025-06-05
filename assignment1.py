@@ -17,7 +17,7 @@ root = tk.Tk()
 root.title("Arduino Monitor")
 root.geometry("300x200")
 
-temp_label = Label(root, text="Temperature: --°C", font=("Arial", 14))
+temp_label = Label(root, text="Temperature: -- C", font=("Arial", 14))
 temp_label.pack()
 
 fire_label = Label(root, text="Fire Status: No Fire", font=("Arial", 14), fg="green")
