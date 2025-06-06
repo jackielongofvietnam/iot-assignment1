@@ -60,7 +60,6 @@ fireStatus = "1"  # Track fire state
 def update_data():
     arduino.write(b'')
     data = arduino.readline().decode().strip()
-    print("Received data:", data)
     global fireStatus
     if data:
         try:
