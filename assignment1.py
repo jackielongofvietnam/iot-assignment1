@@ -39,7 +39,6 @@ fireLabel.pack()
 fanStatus = False  # Track fan state
 
 def toggle_fan():
-    global fanStatus
     if fanStatus:
         command = "FAN_OFF\n"
         arduino.write(command.encode())  # Send command
@@ -50,6 +49,7 @@ def toggle_fan():
         fanButton.config(text="Turn Fan OFF")
 
     fanStatus = not fanStatus # Change fan state every time button is pressed
+    print(fanStatus)
 
 fanButton = Button(root, text="Turn Fan ON", command=toggle_fan, font=("Arial", 12))
 fanButton.pack()
@@ -61,10 +61,10 @@ def update_data():
     print("Received data:", data)
     if data:
         try:
-            temp, flame = data.split(",")
+            temp, fire = data.split(",")
             tempLabel.config(text="Temperature: {} C".format(temp))
             
-            if flame == "0":
+            if fire == "0":
                 fireLabel.config(text="Fire Status: FIRE DETECTED!", fg="red")
                 arduino.write(b'BUZZER_ON\n')  # Buzzer ON
             else:
