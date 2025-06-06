@@ -37,7 +37,6 @@ def toggle_fan():
         fan_button.config(text="Turn Fan OFF")
 
     fan_status = not fan_status
-    print(fan_status)
     print("Sent command:", command)
 
 fan_button = Button(root, text="Turn Fan ON", command=toggle_fan, font=("Arial", 12))
