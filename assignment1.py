@@ -5,72 +5,82 @@ import pymysql
 import time
 
 # Database Setup
-db = pymysql.connect(host="localhost", user="pi", password="", database="assignment1")
-cursor = db.cursor()
+database = pymysql.connect(
+    host="localhost", 
+    user="pi", 
+    password="", 
+    database="assignment1"
+)
+cursor = database.cursor()
 
 # Connect to Arduino via Serial
 arduino = serial.Serial('/dev/ttyS0', 9600, timeout=1)
 time.sleep(2)
 
-# GUI Setup
+# UI Setup
 root = tk.Tk()
-root.title("Arduino Monitor")
+root.title("Environment Monitor")
 root.geometry("300x200")
 
-temp_label = Label(root, text="Temperature: -- C", font=("Arial", 14))
-temp_label.pack()
+tempLabel = Label(
+    root, 
+    text="Temperature: -- C", 
+    font=("Arial", 14)
+)
+tempLabel.pack()
 
-fire_label = Label(root, text="Fire Status: No Fire", font=("Arial", 14), fg="green")
-fire_label.pack()
+fireLabel = Label(
+    root, 
+    text="Fire Status: No Fire", 
+    font=("Arial", 14), fg="green"
+)
+fireLabel.pack()
 
-fan_status = False  # Track fan state
+fanStatus = False  # Track fan state
 
 def toggle_fan():
-    global fan_status
-    if fan_status:
-        command = "FAN_OFF\n"
+    global fanStatus
+    if fanStatus:
+        command = "B\n"
         arduino.write(command.encode())  # Send command
-        fan_button.config(text="Turn Fan ON")
+        fanButton.config(text="Turn Fan ON")
     else:
-        command = "FAN_ON\n"
+        command = "A\n"
         arduino.write(command.encode())  # Send command
-        fan_button.config(text="Turn Fan OFF")
+        fanButton.config(text="Turn Fan OFF")
 
-    fan_status = not fan_status
-    print("Sent command:", command)
+    fanStatus = not fanStatus # Change fan state every time button is pressed
 
-fan_button = Button(root, text="Turn Fan ON", command=toggle_fan, font=("Arial", 12))
-fan_button.pack()
+fanButton = Button(root, text="Turn Fan ON", command=toggle_fan, font=("Arial", 12))
+fanButton.pack()
 
-# Function to Read Arduino Data
+# Read Arduino Data
 def update_data():
-    arduino.write(b'')  # Ensure we read fresh data
+    arduino.write(b'')
     data = arduino.readline().decode().strip()
-    print("Received data:", data)  # Debugging output
+    print("Received data:", data)
     if data:
         try:
             temp, flame = data.split(",")
-            temp_label.config(text="Temperature: {} C".format(temp))
+            tempLabel.config(text="Temperature: {} C".format(temp))
             
             if flame == "0":
-                fire_label.config(text="Fire Status: FIRE DETECTED!", fg="red")
-                arduino.write(b'BUZZER_ON\n')  # Activate buzzer
+                fireLabel.config(text="Fire Status: FIRE DETECTED!", fg="red")
+                arduino.write(b'X\n')  # Buzzer ON
             else:
-                fire_label.config(text="Fire Status: No Fire", fg="green")
-                arduino.write(b'BUZZER_OFF\n')  # Deactivate buzzer
+                fireLabel.config(text="Fire Status: No Fire", fg="green")
+                arduino.write(b'Y\n')  # Buzzer OFF
 
-            # Save Data to MySQL
             cursor.execute("INSERT INTO tempLog (temperature, time) VALUES (%s, NOW())", (temp,))
-            db.commit()
+            database.commit()
 
         except ValueError:
             pass
 
-    root.after(1000, update_data)  # Refresh every second
+    root.after(1000, update_data)  # Refresh UI every second
 
 update_data()
 root.mainloop()
 
-# Close DB connection when GUI closes
 cursor.close()
-db.close()
+database.close()
