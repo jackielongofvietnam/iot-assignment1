@@ -41,11 +41,11 @@ fanStatus = False  # Track fan state
 def toggle_fan():
     global fanStatus
     if fanStatus:
-        command = "B\n"
+        command = "FAN_OFF\n"
         arduino.write(command.encode())  # Send command
         fanButton.config(text="Turn Fan ON")
     else:
-        command = "A\n"
+        command = "FAN_ON\n"
         arduino.write(command.encode())  # Send command
         fanButton.config(text="Turn Fan OFF")
 
@@ -66,10 +66,10 @@ def update_data():
             
             if flame == "0":
                 fireLabel.config(text="Fire Status: FIRE DETECTED!", fg="red")
-                arduino.write(b'X\n')  # Buzzer ON
+                arduino.write(b'BUZZER_ON\n')  # Buzzer ON
             else:
                 fireLabel.config(text="Fire Status: No Fire", fg="green")
-                arduino.write(b'Y\n')  # Buzzer OFF
+                arduino.write(b'BUZZER_OFF\n')  # Buzzer OFF
 
             cursor.execute("INSERT INTO tempLog (temperature, time) VALUES (%s, NOW())", (temp,))
             database.commit()
