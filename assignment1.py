@@ -28,12 +28,16 @@ fan_status = False  # Track fan state
 def toggle_fan():
     global fan_status
     if fan_status:
-        arduino.write(b'FAN_OFF\n')
+        command = "FAN_OFF\n"
+        arduino.write(command.encode())  # Send command
         fan_button.config(text="Turn Fan ON")
     else:
-        arduino.write(b'FAN_ON\n')
+        command = "FAN_ON\n"
+        arduino.write(command.encode())  # Send command
         fan_button.config(text="Turn Fan OFF")
+
     fan_status = not fan_status
+    print("Sent command:", command)
 
 fan_button = Button(root, text="Turn Fan ON", command=toggle_fan, font=("Arial", 12))
 fan_button.pack()
