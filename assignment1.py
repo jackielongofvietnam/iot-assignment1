@@ -47,6 +47,7 @@ fan_button.pack()
 def update_data():
     arduino.write(b'')  # Ensure we read fresh data
     data = arduino.readline().decode().strip()
+    print("Received data:", data)  # Debugging output
     if data:
         try:
             temp, flame = data.split(",")
